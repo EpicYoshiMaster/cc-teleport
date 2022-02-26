@@ -1,8 +1,30 @@
 const fs = require('fs').promises;
 const path = require('path');	
 
+//Implement new keys for Saving and Loading in the Menu
+sc.OPTIONS_DEFINITION["keys-save-pos"] = {
+	type: "CONTROLS",
+	init: {
+		key1: ig.KEY.K,
+		key2: undefined
+	},
+	cat: sc.OPTION_CATEGORY.CONTROLS,
+	hasDivider: true,
+	header: "cc-teleport",
+};
+
+sc.OPTIONS_DEFINITION["keys-load-pos"] = {
+	type: "CONTROLS",
+	init: {
+		key1: ig.KEY.L,
+		key2: undefined
+	},
+	cat: sc.OPTION_CATEGORY.CONTROLS,
+	header: "cc-teleport",
+};
+
 ig.module('game.feature.gui.teleport')
-	.requires('dom.ready', 'impact.feature.gui.gui','game.feature.model.game-model','game.feature.combat.combat')
+	.requires('dom.ready', 'impact.feature.gui.gui','game.feature.model.game-model','game.feature.combat.combat', 'game.feature.control.control')
 	.defines(() => {
 		
 		
@@ -21,9 +43,10 @@ ig.module('game.feature.gui.teleport')
 		const markerValues = ['up', 'down', 'left', 'right', 'landmark'];
 		let mapValues = [];
 
+		let savedMap, savedPosition;
 
 		// ---------------------- init map list Variable
-		dir = './assets/data/maps';
+		const dir = './assets/data/maps';
 
 		/**
 		 * @description get all teleportable maps recursively
@@ -57,7 +80,7 @@ ig.module('game.feature.gui.teleport')
 		 * @param {string} marker Map position to start 
 		 */
 		function teleportIfExists(map,marker){
-			mapPath = map.toPath(ig.root + 'data/maps/', '.json');	//From 
+			let mapPath = map.toPath(ig.root + 'data/maps/', '.json');	//From 
 			jQuery.ajax({
 				dataType: 'json',
 				url: mapPath,
@@ -77,12 +100,10 @@ ig.module('game.feature.gui.teleport')
 		/**
 		 * @description create TeleportPosition instante based only on marker value
 		 * @param {string} marker value of the marker
-		 * 		Possible values:
-		 * 			- 'up', 'down', 'left', 'right', 'landmark'
 		 */
 		function setTeleportPosition(marker){
 			return ig.TeleportPosition.createFromJson({
-				marker: markerValues.find( m => m == marker),
+				marker: marker, //removed markerValues verification, Save/Load Position knows more marker values
 				pos: 0,
 				face: null,
 				level: 0,
@@ -233,7 +254,75 @@ ig.module('game.feature.gui.teleport')
 			}
 		}
 
+		/**
+		 * @description Initialize Custom Bind (because the keybinder is kinda dumb)
+		 * @param {sc.OPTIONS_DEFINITION[*]} binding
+		 * @param {inputname} inputname name of the input to add
+		 */
+		function initCustomBind(binding, inputname) {
+
+			if(binding.init.key1 != void 0) {
+				ig.input.bind(binding.init.key1, inputname);
+				sc.fontsystem.changeKeyCodeIcon(inputname, binding.init.key1);
+			}
+			binding.init.key1 != void 0 && ig.input.bind(binding.init.key1, inputname);
+		}
+
 		// ----------------- Mod Injections --------------------------------------------------------------------
+
+		/**
+		 * @inject
+		 * Implement new bindings into the KeyBinder (unfortunately the data is initialized prior so it's silly)
+		 */
+		sc.KeyBinder.inject({
+			initBindings() {
+				this.parent();
+
+				initCustomBind(sc.OPTIONS_DEFINITION["keys-save-pos"], "save-pos");
+				initCustomBind(sc.OPTIONS_DEFINITION["keys-load-pos"], "load-pos");
+			}
+		});
+
+		/**
+		 * @inject
+		 * Detect when Save and Load Position/Map binds are pressed
+		 */
+		 sc.Control.inject({
+			savePosPress: function() {
+				return ig.input.pressed("save-pos");
+			},
+
+			loadPosPress: function() {
+				return ig.input.pressed("load-pos");
+			}
+		});
+
+		/**
+		 * @inject
+		 * Handle execution of Save and Load Position/Map keybinds
+		 */
+		ig.ENTITY.Player.inject({
+			gatherInput(...args) {
+				if(ig.game.isControlBlocked()) {
+					return this.parent(...args);
+				}
+
+				if(!ig.interact.isBlocked()) {
+					if(sc.control.savePosPress()) {
+						savedMap = ig.game.mapName;
+						savedPosition = ig.game.marker;
+						console.log(`Saving Map: ${savedMap}, Position: ${savedPosition}`);
+					}
+	
+					if(sc.control.loadPosPress()) {
+						console.log(`Loading Map: ${savedMap}, Position: ${savedPosition}`);
+						teleportIfExists(savedMap, savedPosition);
+					}
+				}
+
+				return this.parent(...args);
+			}
+		});
 
 		/**
 		 * @inject

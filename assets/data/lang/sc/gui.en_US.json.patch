@@ -1,0 +1,16 @@
+{
+	"labels": {
+		"options": {
+			"headers": {
+				"cc-teleport": "CC Teleport"
+			},
+
+			"controls": {
+				"keys": {
+					"save-pos": "Save Position/Map",
+					"load-pos": "Load Position/Map"
+				}
+			}
+		}
+	}
+}
