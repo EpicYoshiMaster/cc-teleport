@@ -1,5 +1,12 @@
 # cc-teleport
 
+Mod which allows you to teleport between maps instantly!
+
+## Additional Fork Features
+
+- Save and Load Position Binds, configurable in the Controls menu.
+- Toggle UI option, configurable in the Interface menu.
+
 ## Screenshots
 ![cc-teleport-mod-view](https://user-images.githubusercontent.com/15076325/81508302-f1455e80-930b-11ea-8341-47827f18b40d.png)
 ![cc-teleport-mod-view](https://user-images.githubusercontent.com/15076325/81508457-ea6b1b80-930c-11ea-815d-eb258268074e.png)
