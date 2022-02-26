@@ -1,6 +1,0 @@
-{
-	"name": "teleport",
-	"version": "0.1.0",
-	"description": "Menu for quick teleportation",
-	"prestart": "prestart.js"
-}

@@ -1,0 +1,8 @@
+{
+	"id": "teleport",
+	"version": "0.2.0",
+	"module": true,
+	"title": "Teleport",
+	"description": "Menu and Keybinds for Quick Teleportation.",
+	"prestart": "prestart.js"
+}
