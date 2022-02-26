@@ -1,6 +1,15 @@
 const fs = require('fs').promises;
 const path = require('path');	
 
+//Allow players to disable the Teleport UI
+sc.OPTIONS_DEFINITION["show-teleport-ui"] = {
+	type: "CHECKBOX",
+	init: true,
+	cat: sc.OPTION_CATEGORY.INTERFACE,
+	hasDivider: true,
+	header: "cc-teleport",
+};
+
 //Implement new keys for Saving and Loading in the Menu
 sc.OPTIONS_DEFINITION["keys-save-pos"] = {
 	type: "CONTROLS",
@@ -337,8 +346,16 @@ ig.module('game.feature.gui.teleport')
 				if( (model instanceof sc.GameModel) && (event == sc.GAME_MODEL_MSG.STATE_CHANGED || sc.GAME_MODEL_MSG.SUB_STATE_CHANGED ) ){
 					if( sc.model.isTitle() || !sc.model.isRunning())
 						setModState(MOD_STATE.ALL_HIDDEN);
-					if( sc.model.isGame() && sc.model.isRunning() )
-						setModState(MOD_STATE.TOGGLER_SHOWN);
+					if( sc.model.isGame() && sc.model.isRunning() ) {
+						if( sc.options.get("show-teleport-ui") ) {
+							setModState(MOD_STATE.TOGGLER_SHOWN);
+						} 
+						else {
+							setModState(MOD_STATE.ALL_HIDDEN);
+						}
+				
+					}
+						
 				}
 			}
 		});

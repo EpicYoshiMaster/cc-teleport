@@ -5,6 +5,11 @@
 				"cc-teleport": "CC Teleport"
 			},
 
+			"show-teleport-ui": {
+				"name": "Show Teleport UI",
+				"description": "Toggles if the menu for teleportation should be shown."
+			},
+
 			"controls": {
 				"keys": {
 					"save-pos": "Save Position/Map",
