@@ -237,6 +237,11 @@ ig.module('game.feature.gui.teleport')
 		 */
 		function setModState(state){
 
+			//Don't allow other states to be set if we have the UI off
+			if(sc.options && !sc.options.get("show-teleport-ui")) {
+				state = MOD_STATE.ALL_HIDDEN;
+			}
+
 			modState = state;
 
 			switch (state) {
@@ -347,13 +352,7 @@ ig.module('game.feature.gui.teleport')
 					if( sc.model.isTitle() || !sc.model.isRunning())
 						setModState(MOD_STATE.ALL_HIDDEN);
 					if( sc.model.isGame() && sc.model.isRunning() ) {
-						if( sc.options.get("show-teleport-ui") ) {
-							setModState(MOD_STATE.TOGGLER_SHOWN);
-						} 
-						else {
-							setModState(MOD_STATE.ALL_HIDDEN);
-						}
-				
+						setModState(MOD_STATE.TOGGLER_SHOWN);
 					}
 						
 				}
