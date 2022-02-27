@@ -66,7 +66,7 @@ ig.module('game.feature.gui.teleport')
 				files => {
 					for (const file of files) {
 						if( file.endsWith('.json') ){
-							map = path.join( d, file.replace('.json','') );
+							let map = path.join( d, file.replace('.json','') );
 							mapValues.push(  map.replace(/\\/g,'/').replace(/^.*maps(\/|\\)/,'') );
 						}
 						else{
@@ -425,7 +425,7 @@ ig.module('game.feature.gui.teleport')
 				}
 
 				interfaceToggle.onclick = () => {
-					if(modState = MOD_STATE.TOGGLER_SHOWN){
+					if(modState === MOD_STATE.TOGGLER_SHOWN){
 						setModState(MOD_STATE.MOD_SHOWN);
 					} else {
 						setModState(MOD_STATE.TOGGLER_SHOWN);
@@ -444,10 +444,8 @@ ig.module('game.feature.gui.teleport')
 					handleEnterKey(e);
 				}
 
-
 				autocomplete(mapInput,mapValues);
 				autocomplete(markerInput,markerValues);
-				
 
 				// Initial state of the interface
 				setModState(MOD_STATE.ALL_HIDDEN);
