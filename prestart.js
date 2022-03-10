@@ -268,34 +268,7 @@ ig.module('game.feature.gui.teleport')
 			}
 		}
 
-		/**
-		 * @description Initialize Custom Bind (because the keybinder is kinda dumb)
-		 * @param {sc.OPTIONS_DEFINITION[*]} binding
-		 * @param {inputname} inputname name of the input to add
-		 */
-		function initCustomBind(binding, inputname) {
-
-			if(binding.init.key1 != void 0) {
-				ig.input.bind(binding.init.key1, inputname);
-				sc.fontsystem.changeKeyCodeIcon(inputname, binding.init.key1);
-			}
-			binding.init.key1 != void 0 && ig.input.bind(binding.init.key1, inputname);
-		}
-
 		// ----------------- Mod Injections --------------------------------------------------------------------
-
-		/**
-		 * @inject
-		 * Implement new bindings into the KeyBinder (unfortunately the data is initialized prior so it's silly)
-		 */
-		sc.KeyBinder.inject({
-			initBindings() {
-				this.parent();
-
-				initCustomBind(sc.OPTIONS_DEFINITION["keys-save-pos"], "save-pos");
-				initCustomBind(sc.OPTIONS_DEFINITION["keys-load-pos"], "load-pos");
-			}
-		});
 
 		/**
 		 * @inject
