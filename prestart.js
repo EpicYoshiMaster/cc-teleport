@@ -301,7 +301,7 @@ ig.module('game.feature.gui.teleport')
 						console.log(`Saving Map: ${savedMap}, Position: ${savedPosition}`);
 					}
 	
-					if(sc.control.loadPosPress()) {
+					if(sc.control.loadPosPress() && savedMap) {
 						console.log(`Loading Map: ${savedMap}, Position: ${savedPosition}`);
 						teleportIfExists(savedMap, savedPosition);
 					}
